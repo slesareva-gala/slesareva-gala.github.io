@@ -1,0 +1,427 @@
+<!-- LevelGaugeXY - Index Level Gauges x и y -->
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="cp1251">
+  <title>Main</title>
+
+  <style>          
+
+    #containerBase {
+       width: 616px ;
+       min-width: 600px ;
+       max-width: 900px;
+
+       height: 326px;
+       min-height: 285px; 
+       max-height: 400px;
+       position: absolute;  /* ! static */
+       overflow: hidden;
+
+       /* optional, custom */
+       box-sizing: border-box;
+       left: 20px;
+       top: 20px;
+     }
+
+    #containerWork {
+       width:  calc(100% - 16px);
+       min-width: calc( 600px -16px) ; 
+       max-width: calc( 900px -16px) ;  
+       height: calc(326px - 16px);
+       min-height: 285px;
+
+       overflow: auto;
+       box-sizing: border-box;
+       background-color: #ECFFEC;
+       font-family: "Arial";
+       text-align: left;       
+    }
+
+    #title {
+      width: 100%;
+      height: 20px;
+      box-sizing: border-box;
+      padding: 2px;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      color: blue;
+    }
+
+    #destroy {   
+      top: 20px;
+      left: calc(100% / 2 - 2em);
+      position: absolute; 
+      border-radius: 12px;
+      color: red;
+      opacity: 0.5;
+      border: 1px solid red; 
+      outline: none;
+      cursor: pointer;
+    }
+    #destroy:focus,
+    #destroy:hover {
+      background-color: red;
+      color: yellow;
+      box-shadow: 4px 4px #999;
+    }
+    #destroy:active {
+      box-shadow: 0 0 #999;
+      transform: translate(4px,4px);
+    }
+    .caption {
+      width: 100%;
+      padding: 4px;
+      font-size: 14px;
+      color: blue; 
+      font-weight: bold;
+      box-sizing: border-box;
+    }
+    .row {
+      width: 100%;
+      height: 24px;
+      padding: 2px 8px;
+      font-size: 12px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    .rowb { 
+      background-color: #E2E2E2; 
+      border-top: 1px solid;
+      border-bottom: 1px solid;
+    }
+    .rowl { 
+      height: 22px;
+    }
+    .cell {
+      height:100%;
+      float:left;
+      box-sizing: border-box;
+    }
+    .cell1   { width: 22%; }
+    .cell2   { width: 28%; }
+    .cell1_2 { width: 50%; }
+
+     #x, #y, #lenX, #lenY, #stepx, #stepy {
+       width: 65px;
+       height: 12px;
+     }
+     #baseWidth, #baseHeight, #workWidth, #workHeight {
+       width: 40px;
+       height: 12px;
+     }
+     #colorXY, #colorLevel {
+       height: 12px;
+     }
+  </style>
+
+  <script src="levelGaugeXY.min.js"></script> 
+</head>
+
+<body>
+   <div id="containerBase" >    <!-- base div -->
+     <div id="containerWork" >  <!-- working div -->
+       <script> 'use strict';                    
+         levelGaugeXY(    // connecting an object of class LevelGaugeXY to the base window
+            // обязательные 
+            'containerBase',  // id base div 
+            'containerWork',  // id work div
+
+            // additional, optional 
+            { 
+             // number of indices
+             lenX:4,  // >  0  number of values x, ( default: 0 )
+             lenY:4,  // >= 0  number of values y, ( default: 0 )
+             // initial index values (starting) 
+             x:1,  // 0 <= x < lenX, ( default: 0 )
+             y:1,  // 0 <= y < lenY, ( default: 0 )
+             // step of changing index values with the mouse wheel
+             stepx:1,  // 0 <= stepx  < lenX, ( default: 1 )
+             stepy:1,  // 0 <= stepy  < lenY, ( default: 1 )
+
+             // strip arrangement:
+             locationX:'top',   // 'bottom' (default) || 'top'  
+             locationY:'left',  // 'rigth' (default)  || 'left'  
+
+             /* strip design:
+               'none' - custom design, turns off the design by shadow
+               'rgb(0,0,0)' - draw a shadow with a custom color,
+                              default: rgb(200, 200, 200) */
+             colorXY: 'rgb(200, 200, 200)',  
+
+             /* direction of growth of level gauges:
+               'directly' - consistent with the growth of the index:
+                       with increase / decrease x - increases / decreases
+               'inverse' - with increase / decrease x (default) - decreases / increases
+             */
+             dependX: 'directly',   // for the initiator x 
+             dependY: 'directly',   // for the initiator y 
+
+             // color level gauges
+             colorLevel:'rgb(100,100,100)' // default, rgb(100, 100, 100) 
+            }
+         );
+       </script>
+
+       <form >
+         <div id='title'> Index Level Gauge Management </div>
+         <input type="button" name="destroy" id="destroy" value="destroy" />
+
+         <div class="caption">Displayed data:</div>
+         <div class="row rowb">
+           <div class="cell cell1">index x</div>
+           <div class="cell cell2"><input type="number" name="x" id="x" min="0"/></div>
+           <div class="cell cell1">index y</div>
+           <div class="cell cell2"><input type="number" name="y" id="y" min="0" /></div>
+         </div> 
+         <div class="row">
+           <div class="cell cell1">quantity x</div>
+           <div class="cell cell2"><input type="number" name="lenX" id="lenX" min="0" /></div>
+           <div class="cell cell1">quantity y</div>
+           <div class="cell cell2"><input type="number" name="lenY" id="lenY" min="0" /></div>
+         </div> 
+         <div class="row rowb">
+           <div class="cell cell1">step x <small>(wheel)</small></div>
+           <div class="cell cell2"><input type="number" name="stepx" id="stepx" min="0"/></div>
+           <div class="cell cell1">step y <small>(wheel)</small></div>
+           <div class="cell cell2"><input type="number" name="stepy" id="stepy" min="0"/></div>
+         </div> 
+         <div class="caption">Level gauge visualization parameters:</div>
+         <div class="row rowb rowl">
+           <div class="cell cell1_2">base window sizes <small>(px)</small> :</div>
+           <div class="cell cell1_2">working window sizes <small>(px)</small> :</div>
+         </div> 
+         <div class="row">
+           <div class="cell cell1"><input type="number" name="baseWidth"  id="baseWidth"  min="0" />&nbsp;width</div>
+           <div class="cell cell2"><input type="number" name="baseHeight" id="baseHeight" min="0" />&nbsp;height</div>
+           <div class="cell cell1"><input type="number" name="workWidth"  id="workWidth" disabled="disabled"/>&nbsp;width</div>
+           <div class="cell cell2"><input type="number" name="workHeight" id="workHeight" min="0" />&nbsp;height</div>
+         </div> 
+         <div class="row" style="height: 14px; padding-top:0 ; font-size: 10px;">
+           <div class="cell cell1">&nbsp;wB:&nbsp;600..&nbsp;616..&nbsp;900</div>
+           <div class="cell cell2">&nbsp;hB&nbsp;285..&nbsp;326..&nbsp;400</div>
+           <div class="cell cell1">&nbsp;(100%wB-16)</div>
+           <div class="cell cell2">&nbsp;285..&nbsp;hB</div>
+         </div> 
+         <div class="row rowb">
+           <div class="cell cell1">strip X</div>
+           <div class="cell cell2"> 
+             <input type="radio" name="locationX" value="top" /> <small>top</small>
+             <input type="radio" name="locationX" value="bottom" /> <small>bottom</small>
+           </div>
+           <div class="cell cell1">strip Y</div>
+           <div class="cell cell2"> 
+             <input type="radio" name="locationY" value="left" /> <small>left</small>
+             <input type="radio" name="locationY" value="right" /> <small>right</small>
+           </div>
+         </div> 
+         <div class="row">
+           <div class="cell cell1">strip color</div>
+           <div class="cell cell2"><input type="color" id="colorXY" name="colorXY"><span id="labelColorXY"></span></div>
+           <div class="cell cell1">color level gauges</div>
+           <div class="cell cell2"><input type="color" id="colorLevel" name="colorLevel"><span id="labelColorLevel"></span></div>
+         </div> 
+         <div class="row rowb rowl">
+           <div class="cell cell1_2">correlation of x level gauge and x value :</div>
+           <div class="cell cell1_2">correlation of y level gauge and y value :</div>
+         </div> 
+         <div class="row">
+           <div class="cell cell1"><input type="radio" name="dependX" value="directly" /> <small>directly</small></div>
+           <div class="cell cell2"><input type="radio" name="dependX" value="inverse" /> <small>inverse</small></div>
+           <div class="cell cell1"><input type="radio" name="dependY" value="directly" /> <small>directly</small></div>
+           <div class="cell cell2"><input type="radio" name="dependY" value="inverse" /> <small>inverse</small></div>
+         </div> 
+       </form >
+     </div>
+   </div>
+
+  <script>
+      'use strict';
+
+    containerBase.addEventListener("levelgaugexy", 
+          function(e){
+            if ( 'x' in e.detail )  x.value = e.detail.x.new;  
+            if ( 'y' in e.detail )  y.value = e.detail.y.new;  
+            if ( 'lenX' in e.detail ) lenX.value = e.detail.lenX.new;  
+            if ( 'lenY' in e.detail ) lenY.value = e.detail.lenY.new;  
+          }, {passive:true} );
+
+    let lgxy = containerBase.lgxy;
+
+    // initial values
+    x.value = lgxy.x;
+    y.value = lgxy.y;
+    lenX.value = lgxy.lenX;
+    lenY.value = lgxy.lenY;
+    stepx.value = lgxy.stepx;
+    stepy.value = lgxy.stepy;
+    baseWidth.value = containerBase.offsetWidth;
+    workWidth.value = containerWork.offsetWidth;
+    baseHeight.value= containerBase.offsetHeight;
+    workHeight.value= containerWork.offsetHeight;
+    let locationX=document.getElementsByName('locationX');
+    locationX[( lgxy.locationX == 'bottom'  ? 1 : 0 )].checked = "checked";
+    let locationY=document.getElementsByName('locationY');
+    locationY[( lgxy.locationY == 'right'  ? 1 : 0 )].checked = "checked";
+    colorXY.value = rgbToHEX( lgxy.colorXY ); 
+    colorLevel.value = rgbToHEX( lgxy.colorLevel ); 
+    let dependX=document.getElementsByName('dependX');
+    dependX[( lgxy.dependX == 'directly' ? 0 : 1 )].checked = "checked";
+    let dependY=document.getElementsByName('dependY');
+    dependY[( lgxy.dependY == 'directly' ? 0 : 1 )].checked = "checked";
+
+    // destroy levelgaugexy
+    destroy.addEventListener("click",function() { 
+      destroy.style.opacity = 0; 
+      destroy.style.visibility='hidden';
+      lgxy.destroy();
+      title.innerHTML = title.innerHTML+'<sup style="color:red;"> destroy </sup>';;
+    });
+
+    // indices (x,y), quantity X, Y, mouse wheel (x,y)
+    x.addEventListener("input",function() { 
+         let value = +validValue(x);
+         if ( value > -1 ) lgxy.x = value; } );
+    y.addEventListener("input",function() { 
+         let value = +validValue(y);
+         if ( value > -1 ) lgxy.y = value; } );
+    lenX.addEventListener("input", function() { 
+         let value = Math.min( +validValue( lenX ), 999999) ;
+         if ( value > -1 )  lgxy.lenX = value; } );
+    lenY.addEventListener("input", function() { 
+         let value = Math.min( +validValue( lenY ), 999999) ;
+         if ( value > -1 )  lgxy.lenY = value; } );
+    stepx.addEventListener("input",function() { 
+         let value = +validValue(stepx);
+         if ( value > -1 ) lgxy.stepx = value; } );
+    stepy.addEventListener("input",function() { 
+         let value = +validValue(stepy);
+         if ( value > -1 ) lgxy.stepy = value; } );
+
+    // checking and casting the value of the index | quantity to the correct form
+    function validValue( obj, placeholder = lgxy[obj.id] ) {   
+      let validValue = obj.value.replace(/[^0-9]/g,'');
+      if (!validValue.length) { 
+        obj.value = ''; 
+        obj.style.borderColor='red'; 
+        obj.placeholder = placeholder;
+        return '-1'; 
+      } else {
+        validValue = +validValue+'';  // remove leading zeros
+        if ( validValue !== obj.value ) obj.value = validValue;
+        obj.style.borderColor=''; 
+        obj.placeholder = '';
+      }
+      return validValue; 
+    }
+
+    // window sizes
+    baseWidth.addEventListener("input", function() {
+      let value = Math.min( +validValue(baseWidth, containerBase.offsetWidth+'' ), 999);
+      if ( value < 0 ) return; // value not processed
+      baseWidth.value = value;
+      containerBase.style.width = value+'px';
+      if ( containerBase.offsetWidth !== value ) {
+        baseWidth.style.color = 'red' ;
+      } else { 
+        baseWidth.style.color = '' ; 
+        if ( containerWork.offsetWidth > containerBase.offsetWidth ) {
+         containerWork.style.width = containerBase.offsetWidth+'px';
+        }
+        workWidth.value = containerWork.offsetWidth;
+
+        // display strip changes and level indicators
+        lgxy.resize();
+      }
+     }, false); 
+
+    baseHeight.addEventListener("input", function() {
+      let value = Math.min( +validValue(baseHeight, containerBase.offsetHeight+'' ), 999);
+      if ( value < 0 ) return; // value not processed
+      baseHeight.value= value;
+      containerBase.style.height = value+'px';
+      if ( containerBase.offsetHeight !== value ) {
+        baseHeight.style.color = 'red' ;
+      } else {
+        baseHeight.style.color = '' ;
+        workHeight.style.color = '' ;
+        if ( containerWork.offsetHeight > containerBase.offsetHeight ) {
+         containerWork.style.height = containerBase.offsetHeight+'px';
+         } 
+        workHeight.value = containerWork.offsetHeight;
+
+        // display strip changes and level indicators
+        lgxy.resize();
+      }
+     }, false); 
+     workHeight.addEventListener("input", function() {
+      let value = Math.min( +validValue(workHeight, containerWork.offsetHeight+'' ), 999);
+      if ( value < 0 ) return; // value not processed
+      workHeight.value= value;
+      containerWork.style.height = Math.min(value, (containerBase.offsetHeight))+'px';
+      if ( containerWork.offsetHeight !== value ) {
+        workHeight.style.color = 'red' ;
+      } else {
+        workHeight.style.color = '' ;
+
+        // display strip changes and level indicators
+        lgxy.resize();
+      }
+     }, false); 
+
+    // strip arrangement
+    locationX[0].onclick = function(e) { lgxy.locationX = 'top'; };
+    locationX[1].onclick = function(e) { lgxy.locationX = 'bottom';};
+    locationY[0].onclick = function(e) { lgxy.locationY = 'left';};
+    locationY[1].onclick = function(e) { lgxy.locationY = 'right';};
+
+    // strip colors
+    labelColorXY.innerHTML = '&nbsp;<small>'+hexToRGB(colorXY.value)+'</small>';
+    colorXY.addEventListener("input", function() {
+      lgxy.colorXY = hexToRGB(colorXY.value) ;
+      labelColorXY.innerHTML = '&nbsp;<small>'+lgxy.colorXY+'</small>';
+     }, false); 
+
+    // color level gauges
+    let labelColorLevel = document.getElementById('labelColorLevel');
+    labelColorLevel.innerHTML = '&nbsp;<small>'+hexToRGB(colorLevel.value)+'</small>';
+    colorLevel.addEventListener("input", function() {
+      lgxy.colorLevel = hexToRGB(colorLevel.value) ;
+      labelColorLevel.innerHTML = '&nbsp;<small>'+lgxy.colorLevel+'</small>';
+     }, false); 
+
+    function rgbToHEX( colorRGB ) {
+      let colorHEX = '#000000';
+      let colorsRGB = colorRGB.replace(/[rgbaRGBA()]/g,'').split(',');
+      if ( colorsRGB.length > 2 ) {
+        colorHEX = '#';
+        for (let i=0; i < 3 ; i++) {
+          colorHEX += Number(colorsRGB[i]).toString(16).padStart(2, "0"); 
+        }
+      }
+      return colorHEX;
+    }
+    function hexToRGB( colorHEX ) {
+      let charsHEX = colorHEX.replace(/[#]/g,'').split('');
+      let lengthChar = ( charsHEX.length > 3 ? 2 : 1 ); 
+      let colorRGB = 'rgb(';
+      for ( let i=0; i < charsHEX.length ; i += lengthChar ) {
+        colorRGB += +('0x'+(charsHEX[i]+charsHEX[i+lengthChar-1]))+',';
+      }
+      colorRGB = colorRGB.substring(0,colorRGB.length-1) +')';
+      return colorRGB;
+    }
+
+    // level gauge growth direction
+    dependX[0].onclick = function(e) { lgxy.dependX = 'directly';};
+    dependX[1].onclick = function(e) { lgxy.dependX = 'inverse'; };
+    dependY[0].onclick = function(e) { lgxy.dependY = 'directly';};
+    dependY[1].onclick = function(e) { lgxy.dependY = 'inverse'; };
+    x.focus();
+
+  </script>
+
+</body>
+
+</html>
