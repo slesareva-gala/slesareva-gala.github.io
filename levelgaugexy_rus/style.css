@@ -1,0 +1,109 @@
+﻿/* стили CSS для демонстрации LevelGaugeXY - уровномеров индексов x и y */
+
+#containerBase {
+   width: 616px ;
+   min-width: 600px ;
+   max-width: 900px;
+
+   height: 326px;
+   min-height: 285px; 
+   max-height: 400px;
+   position: absolute;  /* ! static */
+   overflow: hidden;
+
+   /* дополнительно, пользовательские */
+   box-sizing: border-box;
+   left: 20px;
+   top: 20px;
+ }
+
+#containerWork {
+   width:  calc(100% - 16px);
+   min-width: calc( 600px -16px) ; 
+   max-width: calc( 900px -16px) ;  
+   height: calc(326px - 16px);
+   min-height: 285px;
+
+   overflow: auto;
+   box-sizing: border-box;
+   background-color: #ECFFEC;
+   font-family: "Arial";
+   text-align: left;       
+}
+
+#title {
+  width: 100%;
+  height: 20px;
+  box-sizing: border-box;
+  padding: 2px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  color: blue;
+}
+
+#destroy {   
+  top: 20px;
+  left: calc(100% / 2 - 2em);
+  position: absolute; 
+  border-radius: 12px;
+  color: red;
+  opacity: 0.5;
+  border: 1px solid red; 
+  outline: none;
+  cursor: pointer;
+}
+#destroy:focus,
+#destroy:hover {
+  background-color: red;
+  color: yellow;
+  box-shadow: 4px 4px #999;
+}
+#destroy:active {
+  box-shadow: 0 0 #999;
+  transform: translate(4px,4px);
+}
+.caption {
+  width: 100%;
+  padding: 4px;
+  font-size: 14px;
+  color: blue; 
+  font-weight: bold;
+  box-sizing: border-box;
+}
+.row {
+  width: 100%;
+  height: 24px;
+  padding: 2px 8px;
+  font-size: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.rowb { 
+  background-color: #E2E2E2; 
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+}
+.rowl { 
+  height: 22px;
+}
+.cell {
+  height:100%;
+  float:left;
+  box-sizing: border-box;
+}
+.cell1   { width: 22%; }
+.cell2   { width: 28%; }
+.cell1_2 { width: 50%; }
+
+#x, #y, #lenX, #lenY, #stepx, #stepy {
+  width: 65px;
+  height: 12px;
+}
+#baseWidth, #baseHeight, #workWidth, #workHeight {
+  width: 40px;
+  height: 12px;
+}
+#colorXY, #colorLevel {
+  height: 12px;
+}
