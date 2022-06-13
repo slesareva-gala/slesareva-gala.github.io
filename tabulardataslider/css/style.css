@@ -1,0 +1,106 @@
+﻿/* CSS стили страницы */
+
+:focus { outline: 1px solid rgb(150,150,150); }
+
+/* кнопка выбора файла */
+#input-file {
+  padding: 3px 15px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background: #ddd;
+  color: #333;
+  cursor: pointer;
+  margin-left: 5px;
+}
+#input-file:hover { background: rgb(218,218,218); color: green;}
+#input-file:active { background: rgb(210,210,210); }
+
+#name-file {
+  display: inline-block;
+  margin-left: 5px;
+  margin-bottom: 3px;
+  padding: 3px 15px;
+  font-family: PT Serif,Times New Roman,Georgia,serif;
+  color: blue;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* стили таблицы */
+#libAlbum {
+  width: 600px;
+  height: 500px;  
+  position: relative;  /* ! static */
+  overflow: hidden;
+  margin-top:  5px;
+  margin-left: 5px;
+
+  color: white;
+  background-color: white;
+  font-family: PT Serif,Times New Roman,Georgia,serif;
+  font-size: 1em; 
+  text-align: left;       
+  float: left;
+}
+
+.data_name {
+  color: blue;
+}
+.head_data_name {
+  color: blue;
+}
+.foot_data_name {
+  color: blue;
+  text-align: right;       
+}
+
+/* стили настройки таблицы */
+#panelMake {
+  width: 282px; 
+  height: 170px; 
+  position: relative; 
+  float: left;
+  margin-left: 40px; 
+  text-align: center; 
+  font-size: 1em; 
+  font-weight: bold;
+}
+
+#panelStru{
+  display: block;
+  float:right; 
+  width: 1.5em;
+}
+.panelButton{
+  cursor: pointer;
+  display: block;
+  box-sizing: border-box ; 
+  user-select: none; 
+  position: relative;
+  float:right; 
+  margin-bottom: 0.2em;
+  width: 1.5em;
+  height: 1.5em;
+  border: 1px solid #ccc;
+  border-radius: 0.2em;
+  padding: 0.1em 0.2em; 
+  transform: rotate(90deg);
+  background: linear-gradient(
+    rgb(250, 250, 250),
+    rgb(210, 220, 230) );
+}
+.panelButton:hover { background: rgb(218,218,218); color: green;}
+.panelButton:active { background: rgb(210,210,210); }
+
+#panelAlbum{
+  width: 250px; 
+  height: 210px; 
+  position: relative; 
+  text-align: left; 
+  font-weight: normal;
+  float: left;
+  margin-top: 0.1em ;
+} 
+.isOut {
+  text-align: center;
+}

@@ -1,0 +1,213 @@
+<!-- resize --> 
+<!DOCTYPE HTML> 
+<html>
+<head>        
+  <meta charset="UTF-8">
+  <title>resize</title>
+  <style>
+    :root {	
+      /* изменяемые */
+      --rw-color: rgb(100,100,100);
+    }
+
+    .work {
+      position: relative; 
+      width: 100%;
+      height: 100%;
+      background-color: yellow;
+    }
+
+    .-rw-win {
+      /* обязательные */
+      position: relative;  /* ! static */
+      box-sizing: border-box ; 
+/*overflow: hidden;*/
+/*    
+      border: 0; // 6px solid transparent; 
+      border-bottom: 6px solid transparent; 
+      border-right: 6px solid transparent;
+*/
+
+      margin: 0 6px 6px 0;
+      box-shadow: var( --rw-color ) 0px 0px 1px;
+
+
+      /* изменяемые */
+      margin-top:  50px;
+      margin-left: 50px;
+
+      width: 50%;
+      height: 200px;
+
+    }
+    .-rw-right {
+      position: absolute;
+      box-sizing: border-box ; 
+      top: 0;
+      right: -6px;
+      height: 100%;
+      border-right: 6px solid green; 
+/*      border-right: 6px solid transparent; */
+      cursor: e-resize;
+    }
+    .-rw-bottom {
+      position: absolute;
+      box-sizing: border-box ; 
+      bottom: -6px;
+      left: 0;
+      width: 100%;
+      border-bottom: 6px solid red; 
+/*      border-bottom: 6px solid transparent; */
+      cursor: s-resize;
+    }
+
+    .-rw-angleR {
+      position: absolute;
+      box-sizing: border-box ; 
+      bottom: -6px;
+      right: -6px;
+      width: 6px;
+      height: 12px;
+      cursor: se-resize;
+
+      background-color: blue;
+    }
+    .-rw-angleB {
+      position: absolute;
+      box-sizing: border-box ; 
+      bottom: -6px;
+      right: -6px;
+      width: 12px;
+      height: 6px;
+      cursor: se-resize;
+
+      background-color: blue;
+    }
+  </style>    
+</head>
+
+<body>
+  <div id="sample" class="-rw-win">
+    <div class="work"></div>
+
+    <div class="-rw-right"></div>
+    <div class="-rw-bottom"></div>
+    <div class="-rw-angleR"></div>
+    <div class="-rw-angleB"></div>
+
+    <script>
+    const int = (x)=>(+/-*\d+/.exec(x));
+
+    let rwMouse = (e) => {
+      let isTouch = ( 'ontouchstart' in window );
+      let el = e.target;
+      let elP, cl;
+      while ( true ) {
+        elP = el.parentElement;
+        cl = el.classList.value;
+        if ( ~cl.indexOf('-rw-') ) break;
+        else el = elP;
+      } 
+      e.preventDefault(); // предотвратить запуск выделения (действие браузера)
+
+      let rw = '';  // статус resize
+      if ( ~cl.indexOf('-rw-right') ) rw = 'e' ;
+      else if ( ~cl.indexOf('-rw-bottom') ) rw = 's' ;
+      else if ( ~cl.indexOf('-rw-angleR') || ~cl.indexOf('-rw-angleB') ) rw = 'se' ;
+
+      if ( rw ) {
+
+        let touch = isTouch ? e.changedTouches[0] : e ;
+
+        let mPosX = touch.pageX ;
+        let mPosY = touch.pageY ;
+
+        let winTop  = elP.offsetTop + ( rw=='e' ? 0 : 32 );
+        let winLeft = elP.offsetLeft+ ( rw=='s' ? 0 : 32 );
+        let winWidth  = elP.style.width ? +int(elP.style.width) : elP.offsetWidth; 
+        let winWidthMin = 32;
+        let winWidthMax = rw == 's' ? winWidth : document.documentElement.clientWidth - winLeft - 6 ;
+        let winHeight = elP.style.height ? +int(elP.style.height) : elP.offsetHeight; 
+        let winHeightMin = 32;
+        let winHeightMax = rw == 'e' ? winHeight : document.documentElement.clientHeight - winTop - 6 ;
+
+        let b = document.createElement('div');
+        b.id = '-rw-resize';    
+        b.style.position = 'absolute';
+        b.style.top = winTop + 'px';
+        b.style.left = winLeft +'px';
+        b.style.width = winWidthMax + 'px';
+        b.style.height = winHeightMax +'px';
+        b.style.cursor = rw+'-resize';
+        b.style.backgroundColor = 'rgba(210,210,210,0.5)';
+        document.body.appendChild(b);
+
+        if ( isTouch ) {
+          sample.addEventListener("touchmove", rwResize, {passive: false} );
+          sample.addEventListener("touchend", rwResizeStop, false);
+          sample.addEventListener("touchcancel", rwResizeStop, false);
+        } else {
+          b.addEventListener('mousemove', rwResize );
+          b.addEventListener('mouseup', rwResizeStop );
+          b.addEventListener('mouseleave', rwResizeStop );
+        }
+
+
+        function rwResize(e) {
+          e.preventDefault();
+
+          let touch = isTouch ? e.changedTouches[0] : e ;
+          let pX = touch.pageX ;
+          let pY = touch.pageY ;
+          let dMoveX = rw=='s' ? 0 : pX - mPosX ;
+          let dMoveY = rw=='e' ? 0 : pY - mPosY ;
+
+          mPosX = pX;
+          mPosY = pY;
+
+          let stop = false;
+          let stopX = pX > winLeft+winWidthMax || pX < winLeft; 
+          let stopY = pY > winTop+winHeightMax || pY < winTop;
+
+          if ( dMoveX ) { 
+            winWidth += dMoveX;  
+            if ( stop = winWidth > winWidthMax ) winWidth = winWidthMax; 
+            else if ( stop = winWidth < winWidthMin ) winWidth = winWidthMin;
+            elP.style.width = winWidth + 'px' ; // ширина окна
+          }
+          if ( dMoveY ) { 
+            winHeight += dMoveY; 
+            if ( stop = winHeight > winHeightMax ) winHeight = winHeightMax; 
+            else if ( stop = winHeight < winHeightMin ) winHeight = winHeightMin;
+            elP.style.height = winHeight + 'px' ; // высота окна
+          }
+          if (stop || stopX || stopY ) { rwResizeStop(); }
+        }
+
+        function rwResizeStop() {
+          if ( 'ontouchstart' in window ) {
+            sample.removeEventListener("touchmove", rwResize, {passive: false} );
+            sample.removeEventListener("touchend", rwResizeStop, false);
+            sample.removeEventListener("touchcancel", rwResizeStop, false);
+          } else {
+            b.removeEventListener('mouseleave', rwResizeStop);
+            b.removeEventListener('mouseup', rwResizeStop);
+            b.removeEventListener('mousemove', rwResize);
+          }
+
+          document.body.removeChild(b);
+        }
+      }
+    };
+
+    if ( 'ontouchstart' in window )
+      sample.addEventListener("touchstart", rwMouse, false );
+    else 
+      sample.addEventListener('mousedown', rwMouse, false );
+
+    </script>
+
+  </div>
+
+</body>                
+</html>
