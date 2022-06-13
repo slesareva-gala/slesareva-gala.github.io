@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!-- Демонстрация tabular data slider  - слайдер табличных данных
  --> 
 <!DOCTYPE HTML> 
@@ -200,4 +201,208 @@
   </script>
 </body>
 
+=======
+<!-- Демонстрация tabular data slider  - слайдер табличных данных
+ --> 
+<!DOCTYPE HTML> 
+<html>
+<head>        
+  <meta charset="UTF-8">
+  <title>Демо TDS</title>
+  <!-- подключение tds.css до пользовательских css --->
+  <link rel="stylesheet" type="text/css" href="css/tds.css" />
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+  <script src="levelgaugexy.min.js"></script> 
+  <script src="tds.js"></script> 
+  <script src='./data/tdsdata.js'></script> 
+  <script src="./init/libAlbum.js"></script> 
+  <script src="./init/panelTDS.js"></script> 
+</head>
+
+<body>
+
+  <h3><label>
+    <input type="file" id="input-name" style="display: none;"
+      accept="application/json" />
+    <span id="input-file">Выбрать файл JSON: <small>[ {"имя1":значение1,  ...}, ... ] </small> </span>
+  </label></h3>
+  <span id="name-file" style="left:5px;">Подведомственные организации Министерства культуры Российской Федерации
+        <br /><small>https://opendata.mkrf.ru/opendata/7705851331-subordinates</small></span>
+
+  <div id="libAlbum" >  
+    <script>
+      // формируем окошко таблички
+      tableDataSlider('libAlbum', tdsdata, defineAlbum); 
+      libAlbum.focus();
+    </script>
+  </div>
+
+  <div id='panelMake'>Настройка колонок таблицы
+    <div id="panelAlbum">  
+      <script>
+       tableDataSlider( 'panelAlbum', libAlbum.tds.struTable(),  panelTDS ); 
+      </script>
+    </div>
+    <div id='panelStru'>
+      <div id='make' class="panelButton" title="применить изменения" >&#x21bb;</div>
+      <div id='colUp' class="panelButton" title="текущую строку вверх" >&#x21e6</div>
+      <div id='colDown' class="panelButton" title="текущую строку ввниз" >&#x21e8</div>
+      <div id='colFixed' class="panelButton" title="установить/снять фиксацию" style="transform: none; padding-top: 0; padding-left: 0;">&#128204</div>
+    </div>
+  </div>
+
+  <script>
+
+    // настройка таблицы
+    let libAlbum = document.getElementById('libAlbum');
+    let panelAlbum = document.getElementById('panelAlbum');
+    let make = document.getElementById('make');
+    let colUp = document.getElementById('colUp');
+    let colDown = document.getElementById('colDown');
+
+    let panelRe = ( off )=>{ make.style.borderColor = ( off ) ? '' : 'rgb(255,36,0)'; } ;
+    let noRe    = ()=>( !make.style.borderColor );
+
+    // переместить столбец вверх
+    colUp.onclick = e => {
+      let listMake  = panelAlbum.tds.jsonData;
+      let curRec = panelAlbum.tds.rec;
+      if ( curRec > 0 && ( listMake[curRec].fixed == listMake[curRec-1].fixed ) ) {
+        let curData = listMake[ curRec ] ;
+        listMake[ curRec ] =  listMake[ curRec - 1 ];
+        listMake[ curRec - 1 ] = curData; 
+        panelAlbum.tds.rec--;
+        panelAlbum.tds.innerSlide();
+        panelRe();
+      }
+    }
+
+    // переместить столбец вниз
+    colDown.onclick = e => {
+      let listMake  = panelAlbum.tds.jsonData;
+      let curRec = panelAlbum.tds.rec;
+      if ( curRec < panelAlbum.tds.recMax && ( listMake[curRec].fixed == listMake[curRec+1].fixed ) ) {
+        let curData = listMake[ curRec ] ;
+        listMake[ curRec ] =  listMake[ curRec + 1 ];
+        listMake[ curRec + 1 ] = curData; 
+        panelAlbum.tds.rec++;
+        panelAlbum.tds.innerSlide();
+        panelRe();
+      }
+    }
+
+    // установит/снять фиксацию столбцов
+    colFixed.onclick = e => {
+      let listMake  = panelAlbum.tds.jsonData;
+      let curRec = panelAlbum.tds.rec;
+      if ( listMake[curRec].fixed  ){
+        for (let i=curRec; ( i < listMake.length ) && listMake[i].fixed ; i++) {
+          listMake[i].fixed = false;
+        }
+      } else {
+        for (let i=curRec; ( i > -1 ) && !listMake[i].fixed ; i--) {
+          listMake[i].fixed = true;
+        }
+      }
+      panelAlbum.tds.innerSlide();
+      panelRe();
+    }
+
+    // применить изменения
+    make.onclick = e => {
+      if ( noRe() ) return;
+
+      let listMake  = panelAlbum.tds.jsonData;
+      let slide = libAlbum.tds.slide;
+      let cols  = slide.cols; 
+
+      let heading = libAlbum.tds.heading;
+      let footing = libAlbum.tds.footing;
+      let hCols, fCols;
+      if ( heading ) hCols = heading.cols; 
+      if ( footing ) fCols = footing.cols; 
+      let orderCols =  libAlbum.tds.orderCols;
+      let grid = libAlbum.tds.grid;
+      let fixed = 0;
+
+      orderCols.length = 0;
+      let slideWidth  = 0;
+      libAlbum.tds.fixed = 0;   // сняли текущую фиксацию
+
+      for (let i=0; i < listMake.length; i++) {
+        let ordCol = listMake[i].pos;
+        // количество зафиксированных
+        if ( listMake[i].fixed ) fixed = i+1;
+
+        // смена порядка вывода колонок
+        if ( i < listMake.length-1 ) {
+          slide.work.insertBefore( cols[ordCol], slide.work.children[i] );
+          if (heading) heading.work.insertBefore( hCols[ordCol], heading.work.children[i] );
+          if (footing) footing.work.insertBefore( fCols[ordCol], footing.work.children[i] );
+        }
+
+        // установка видимости
+        let value = +listMake[i].display ? '' : 'none';
+        cols[ordCol].style.display = value; 
+        if (heading) hCols[ordCol].style.display = value; 
+        if (footing) fCols[ordCol].style.display = value; 
+        if ( +listMake[i].display ) {
+           orderCols[orderCols.length] = i; 
+           slideWidth += parseInt( cols[ordCol].style.width) + grid;
+        }
+
+        listMake[i].pos = i;
+      }
+      // перечень ссылок на столбцы
+      libAlbum.tds.makeColumnsLinks()
+
+      slide.work.style.width = slideWidth + 'px';
+      if (heading) heading.work.style.width = slideWidth + 'px';
+      if (footing) footing.work.style.width = slideWidth + 'px';
+
+      panelRe(1);
+
+      libAlbum.tds.fixed = fixed;   // установили фиксацию
+      libAlbum.tds.col = 0;        // на первую колонку
+      libAlbum.tds.colMax = orderCols.length-1;  // индекс последней колонки
+      libAlbum.tds.sayCursor();
+    }
+
+    // выбор (смена) файла JSON
+    let input = document.getElementById('input-name');
+    let name = document.getElementById('name-file');
+
+    input.onchange = e => { 
+      // получить ссылку на файл
+      let file = e.target.files[0]; 
+      if (!file) return;
+      name.innerHTML = 'Файл: '+file.name+'<small> ( тип: '+file.type+', размер: '+file.size+' ) </small>';
+
+      // настройка читателя
+      let reader = new FileReader();
+          reader.readAsText(file,'UTF-8');
+
+       // здесь мы говорим читателю, что делать, когда он закончил читать ...
+      reader.onload = readerEvent => {
+        let content = readerEvent.target.result;
+        if ( ~file.type.indexOf("json") ) {
+          // очистка окна table - при перезагрузке таблицы
+          libAlbum.tds.destroy(); 
+          panelAlbum.tds.destroy(); 
+
+          let jsonData = JSON.parse(content);
+          tableDataSlider( 'libAlbum', jsonData ); 
+          tableDataSlider( 'panelAlbum', libAlbum.tds.struTable(),  panelTDS ); 
+          libAlbum.focus();
+        }
+      }
+    }
+
+    libAlbum.focus();
+
+  </script>
+</body>
+
+>>>>>>> 31ab00096c8b9977f1bb9edb5526847d88be0c1d
 </html>
