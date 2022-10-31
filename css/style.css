@@ -9,7 +9,7 @@ body {
 span {
   width: 30%;
   display: inline-block;	
-  margin: 0 10px 0 10px;
+  margin: 10px;
   color: rgb(70,120,160);
   font-size: 1.2em;
 }
